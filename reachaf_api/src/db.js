@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import config from './config';
 
-const initDb = async callback => {
+export default async cb => {
   console.log('init db...');
   const { database, password, username } = config.database;
   const sequelize = new Sequelize(
@@ -13,7 +13,5 @@ const initDb = async callback => {
     console.error('Unable to connect to the database: ', err);
   }
   console.log('sequelize test connection was successful');
-  callback();
+  cb(sequelize);
 };
-
-export default initDb;
