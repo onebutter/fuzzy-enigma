@@ -6,7 +6,6 @@ import bodyParser from 'body-parser';
 import initializeDb from './db';
 import routes from './routes';
 import config from './config';
-import defineAuthModel from './services/Auth/model';
 
 let app = express();
 app.server = http.createServer(app);
@@ -16,7 +15,6 @@ app.use(cors());
 app.use(bodyParser.json());
 
 initializeDb(sequelize => {
-  defineAuthModel(sequelize);
   routes(app, config);
   app.server.listen(
     process.env.PORT || config.port,
