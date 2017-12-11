@@ -1,4 +1,6 @@
+import pick from 'lodash/pick';
 import models from 'models';
+import jwt from 'jsonwebtoken';
 const { User } = models;
 
 export const register = async (req, res) => {
@@ -39,8 +41,17 @@ export const login = async (req, res) => {
       });
     }
     const secret = req.app.get('jwt-secret');
-    user = user.applyPermissions('user');
-    res.json(user);
+    const userForToken = pick(user, ['id', 'username']);
+    const token = await jwt.sign(userForToken, secret, {
+      expiresIn: '30m',
+      issuer: 'reachaf',
+      subject: 'userInfo'
+    });
+    user = user.applyRole('user');
+    res.json({
+      user,
+      auth: { token }
+    });
   } catch (err) {
     console.log('Auth', err);
     res.status(err.status || 500);
