@@ -42,8 +42,8 @@ export const login = async (req, res) => {
     }
     const secret = req.app.get('jwt-secret');
     const userForToken = pick(user, ['id', 'username']);
-    const token = await jwt.sign(userForToken, secret, {
-      expiresIn: '30m',
+    const token = jwt.sign(userForToken, secret, {
+      expiresIn: '5m',
       issuer: 'reachaf',
       subject: 'userInfo'
     });
