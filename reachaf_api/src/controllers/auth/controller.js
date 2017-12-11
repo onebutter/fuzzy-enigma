@@ -3,8 +3,20 @@ const { User } = models;
 
 export const register = async (req, res) => {
   try {
-    await User.create(req.body);
-    res.json({ message: 'user created' });
+    const { username, password } = req.body;
+    if (!User.isValidPassword(password)) {
+      return res.status(400).json({
+        message: 'password needs to be more secure'
+      });
+    }
+    const count = await User.count({ where: { username } });
+    if (count) {
+      return res.status(400).json({
+        message: `username: ${username} already exists`
+      });
+    }
+    const user = await User.create(req.body);
+    res.json(user);
   } catch (err) {
     res.status(400);
     res.json(err);
@@ -14,16 +26,23 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    const secret = req.app.get('jwt-secret');
-    const user = await User.findOne({ where: { username } });
+    let user = await User.findOne({ where: { username } });
     if (!user) {
-      throw new Error({
-        status: 404,
-        message: 'user not found'
+      return res.status(404).json({
+        message: `username: ${username} not found`
       });
     }
+    const verified = user.checkPassword(password);
+    if (!verified) {
+      return res.status(400).json({
+        message: 'password is incorrect'
+      });
+    }
+    const secret = req.app.get('jwt-secret');
+    user = user.applyPermissions('user');
     res.json(user);
   } catch (err) {
+    console.log('Auth', err);
     res.status(err.status || 500);
     res.json(err);
   }
