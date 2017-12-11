@@ -1,27 +1,11 @@
-import Sequelize from 'sequelize';
-import config from './config';
-import { syncModels } from './models';
+import models from 'models';
 
 export default async cb => {
-  console.log('init db...');
-  const { database, password, username } = config.database;
-  const sequelize = new Sequelize(
-    `postgresql://${username}:${password}@db/${database}`
-  );
-  try {
-    await sequelize.authenticate();
-  } catch (err) {
-    console.error('[sequelize] Unable to connect to the database: ', err);
-  }
-  console.log('[sequelize] sequelize test connection was successful');
-  console.log('[sequelize] importing models');
-  syncModels(sequelize);
-  console.log('[sequelize] model importing finished, sync to DB');
+  const { sequelize } = models;
   try {
     await sequelize.sync();
   } catch (err) {
-    console.error('[sequelize] sync() failed');
+    console.error('[sequelize] error in sync model', err);
   }
-  console.log('[sequelize] sync successful');
-  cb(sequelize);
+  cb();
 };

@@ -3,14 +3,15 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import bodyParser from 'body-parser';
-import initDB from './db';
-import config from './config';
+import config from 'config';
 import routes from './routes';
+import initDB from './db';
 
 let app = express();
 app.server = http.createServer(app);
 
 app.use(morgan('dev'));
+app.set('jwt-secret', config.secret);
 app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -28,7 +29,7 @@ app.use(function(req, res, next) {
 // no stacktraces leaked to user unless in development environment
 app.use(function(err, req, res) {
   res.status(err.status || 500);
-  res.render('error', {
+  res.json({
     message: err.message,
     error: app.get('env') === 'development' ? err : {}
   });

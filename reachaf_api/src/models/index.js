@@ -1,16 +1,27 @@
-import fs from 'fs';
 import path from 'path';
+import Sequelize from 'sequelize';
+import config from 'config';
 
-export function syncModels(sequelize) {
-  let models = {};
-  fs
-    .readdirSync(__dirname)
-    .filter(
-      file => file.slice(-3) !== '.js' && file !== path.basename(module.filename)
-    )
-    .forEach(file => {
-      const model = sequelize.import(path.join(__dirname, file));
-      models[model.name] = model;
-    });
-  return models;
+const modelList = ['User'];
+let db = {};
+
+const { database, password, username } = config.database;
+const sequelize = new Sequelize(
+  `postgresql://${username}:${password}@db/${database}`
+);
+
+for (const name of modelList) {
+  const model = sequelize.import(path.join(__dirname, name));
+  db[model.name] = model;
 }
+
+for (const name of modelList) {
+  if (db[name].associate) {
+    db[name].associate(db);
+  }
+}
+
+db.sequelize = sequelize;
+db.Sequelize = Sequelize;
+
+export default db;
