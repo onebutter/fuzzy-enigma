@@ -9,12 +9,11 @@ export const getUsers = async (req, res) => {
     if (headerAuths[0] !== 'Bearer') {
       throw new Error('Authorization Header type must be Bearer');
     }
-    const decoded = jwt.verify(headerAuths[1], secret);
-    console.log(decoded);
-    res.json({meh: 'meh'});
+    const { id } = jwt.verify(headerAuths[1], secret);
+    const user = await User.findById(id);
+    res.json(user);
   } catch (err) {
-    console.log(err);
-
+    res.status(400).json(err);
   }
 };
 

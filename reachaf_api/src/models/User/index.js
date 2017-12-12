@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import pick from 'lodash/pick';
 import allowed from './permissions';
 
@@ -10,7 +11,16 @@ export default (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
-      paranoid: true
+      paranoid: true,
+      hooks: {
+        beforeCreate: async user => {
+          try {
+            user.password = await bcrypt.hash(user.password, 10);
+          } catch (err) {
+            throw new Error(err);
+          }
+        }
+      }
     }
   );
 
@@ -18,8 +28,8 @@ export default (sequelize, DataTypes) => {
     return password.length;
   };
 
-  User.prototype.checkPassword = function(password) {
-    return this.password === password;
+  User.prototype.checkPassword = async function(password) {
+    return await bcrypt.compare(password, this.password);
   };
 
   User.prototype.applyRole = function(role) {

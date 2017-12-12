@@ -17,8 +17,10 @@ export const register = async (req, res) => {
         message: `username: ${username} already exists`
       });
     }
-    const user = await User.create(req.body);
-    res.json(user);
+    await User.create(req.body);
+    res.status(201).json({
+      message: `username: '${username}' is successfully created`
+    });
   } catch (err) {
     res.status(400);
     res.json(err);
@@ -34,7 +36,7 @@ export const login = async (req, res) => {
         message: `username: ${username} not found`
       });
     }
-    const verified = user.checkPassword(password);
+    const verified = await user.checkPassword(password);
     if (!verified) {
       return res.status(400).json({
         message: 'password is incorrect'
@@ -43,7 +45,7 @@ export const login = async (req, res) => {
     const secret = req.app.get('jwt-secret');
     const userForToken = pick(user, ['id', 'username']);
     const token = jwt.sign(userForToken, secret, {
-      expiresIn: '5m',
+      expiresIn: '1d',
       issuer: 'reachaf',
       subject: 'userInfo'
     });
