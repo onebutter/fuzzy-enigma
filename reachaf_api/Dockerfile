@@ -9,6 +9,7 @@ ADD . /app
 
 USER node
 EXPOSE 4000
+EXPOSE 5858
 
 CMD ["npm", "start"]
 
