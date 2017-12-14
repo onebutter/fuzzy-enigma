@@ -2,7 +2,7 @@ import path from 'path';
 import Sequelize from 'sequelize';
 import config from 'config';
 
-const modelList = ['User'];
+const modelList = ['User', 'Namecard'];
 let db = {};
 
 const { database, password, username } = config.database;

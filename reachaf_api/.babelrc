@@ -5,7 +5,8 @@
       "root": ["./src"],
       "alias": {
         "models": "./src/models",
-        "config": "./src/config"
+        "config": "./src/config",
+        "utils": "./src/utils"
       }
     }]
   ]

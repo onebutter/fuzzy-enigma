@@ -7,7 +7,12 @@ export default (sequelize, DataTypes) => {
     'User',
     {
       username: { type: DataTypes.STRING, allowNull: false, unique: true },
-      password: { type: DataTypes.STRING, allowNull: false }
+      password: { type: DataTypes.STRING, allowNull: false },
+      role: {
+        type: DataTypes.ENUM,
+        values: ['admin', 'user'],
+        defaultValue: 'user'
+      }
     },
     {
       timestamps: true,
@@ -24,6 +29,10 @@ export default (sequelize, DataTypes) => {
     }
   );
 
+  User.associate = function(models) {
+    models.User.hasMany(models.Namecard);
+  };
+
   User.isValidPassword = function(password) {
     return password.length;
   };
@@ -33,7 +42,8 @@ export default (sequelize, DataTypes) => {
   };
 
   User.prototype.applyRole = function(role) {
-    return pick(this, allowed[role]);
+    let forRole = role || this.role || 'user';
+    return pick(this, allowed[forRole]);
   };
 
   return User;

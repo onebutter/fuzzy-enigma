@@ -1,19 +1,15 @@
-import jwt from 'jsonwebtoken';
 import models from 'models';
 const User = models.User;
 
 export const getUsers = async (req, res) => {
   try {
-    const secret = req.app.get('jwt-secret');
-    const headerAuths = req.headers.authorization.split(' ');
-    if (headerAuths[0] !== 'Bearer') {
-      throw new Error('Authorization Header type must be Bearer');
-    }
-    const { id } = jwt.verify(headerAuths[1], secret);
-    const user = await User.findById(id);
+    const { id } = req.tokenPayload;
+    // TODO this should be findAll
+    let user = await User.findById(id);
+    user = user.applyRole();
     res.json(user);
   } catch (err) {
-    res.status(400).json(err);
+    res.status(500).json(err);
   }
 };
 
@@ -23,7 +19,6 @@ export const createUser = async (req, res) => {
     res.statusCode = 201;
     res.json(createdUser);
   } catch (err) {
-    res.status(400);
-    res.json(err);
+    res.status(500).json(err);
   }
 };
