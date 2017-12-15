@@ -29,7 +29,14 @@ export default (sequelize, DataTypes) => {
     },
     {
       timestamps: true,
-      paranoid: true
+      paranoid: true,
+      scopes: {
+        defaultNamecard: {
+          where: {
+            isDefaultNamecard: true
+          }
+        }
+      }
     }
   );
 
