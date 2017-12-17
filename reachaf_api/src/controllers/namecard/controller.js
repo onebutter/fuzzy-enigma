@@ -34,9 +34,22 @@ export const createNamecard = async (req, res) => {
 export const getNamecards = async (req, res) => {
   try {
     const { id } = req.tokenPayload;
-    const namecards = await Namecard.findAll({ where: { UserId: id } });
-    res.json(namecards);
+    const requestingUser = await User.findById(id);
+
+    if (isRequestingForOwn(requestingUser, req.query)) {
+      const namecards = await Namecard.findAll({ where: { UserId: id } });
+      return res.json(namecards);
+    }
+
+    res.json({ message: 'future implementation for requesting for others, also admin control'});
   } catch (err) {
     res.json(err);
   }
+};
+
+const isRequestingForOwn = (tokenUser, query) => {
+  if (!query || (!query.username && !query.id)) {
+    return false;
+  }
+  return query.username === tokenUser.username || query.id === tokenUser.id;
 };
