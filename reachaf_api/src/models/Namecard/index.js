@@ -9,14 +9,9 @@ export default (sequelize, DataTypes) => {
       },
       privacy: {
         type: DataTypes.ENUM,
-        values: ['public', 'private', 'secret'],
+        values: ['default', 'public', 'private', 'secret'],
         allowNull: false,
         defaultValue: 'secret'
-      },
-      isDefaultNamecard: {
-        type: DataTypes.BOOLEAN,
-        allowNull: false,
-        defaultValue: false
       },
       services: {
         type: DataTypes.JSONB,
@@ -33,7 +28,7 @@ export default (sequelize, DataTypes) => {
       scopes: {
         defaultNamecard: {
           where: {
-            isDefaultNamecard: true
+            privacy: 'default'
           }
         }
       }
