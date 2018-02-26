@@ -5,7 +5,6 @@ const { User, Namecard } = models;
 
 const router = express.Router();
 
-
 const purgedb = async (req, res) => {
   try {
     const opt = { force: true, cascade: true };

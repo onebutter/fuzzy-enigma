@@ -20,7 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use('/', routes);
 
 if (app.get('env') === 'development') {
-  app.use('/utils', devUtils)
+  app.use('/utils', devUtils);
 }
 
 // catch 404 and forward to error handler

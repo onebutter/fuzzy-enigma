@@ -68,19 +68,14 @@ const getNamecardsWithAuth = async (req, res) => {
     }
 
     // at this point, either query.id xor query.username is available
-    if (req.query.userid || req.query.username) {
-      const arg = req.query.username ? req.query.username : req.query.userid;
-      const namecards = await da_namecardsBelongsToUserid(arg, [
-        'default',
-        'public'
-      ]);
-      return res.json(namecards);
-    }
-
-    res.json({
-      message:
-        'future implementation for requesting for others, also admin control'
-    });
+    const userid = req.query.userid
+      ? req.query.userid
+      : (await User.findOne({ where: { username: req.query.username } })).id;
+    const namecards = await da_namecardsBelongsToUserid(userid, [
+      'default',
+      'public'
+    ]);
+    return res.json(namecards);
   } catch (err) {
     res.json(err.message);
   }
