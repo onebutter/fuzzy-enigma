@@ -1,5 +1,9 @@
+import concat from 'lodash/fp/concat';
 import models from 'models';
-import { da_namecardsBelongsToUserid } from './dataAccess';
+import {
+  da_namecardsBelongsToUserid,
+  da_privateNamecardsBelongsToUserid
+} from './dataAccess';
 const { User, Namecard } = models;
 
 export const createNamecard = async (req, res) => {
@@ -75,7 +79,8 @@ const getNamecardsWithAuth = async (req, res) => {
       'default',
       'public'
     ]);
-    return res.json(namecards);
+    const privateNamecards = await da_privateNamecardsBelongsToUserid(userid);
+    return res.json(concat(namecards, privateNamecards));
   } catch (err) {
     res.json(err.message);
   }

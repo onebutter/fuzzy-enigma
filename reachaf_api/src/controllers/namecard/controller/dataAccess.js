@@ -13,3 +13,14 @@ export const da_namecardsBelongsToUserid = async (UserId, privacy) => {
   });
   return namecards;
 };
+
+export const da_privateNamecardsBelongsToUserid = async UserId => {
+  const namecards = await Namecard.findAll({
+    where: {
+      UserId,
+      privacy: 'private'
+    },
+    attributes: ['id', 'tag', 'privacy']
+  });
+  return namecards;
+};
