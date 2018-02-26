@@ -5,7 +5,7 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import config from 'config';
 import routes from './routes';
-import initDB from './db';
+import initDB, { populateWithSampleData } from './db';
 
 let app = express();
 app.server = http.createServer(app);
@@ -35,7 +35,8 @@ app.use(function(err, req, res) {
   });
 });
 
-initDB(() => {
+initDB(async () => {
+  await populateWithSampleData();
   app.server.listen(
     process.env.PORT || config.port,
     process.env.SERVE_IP || config.ip,

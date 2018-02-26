@@ -1,9 +1,9 @@
 import express from 'express';
-import { authRequired } from 'utils/permissions';
+import { authRequired, addTokenPayload } from 'utils/permissions';
 import { createNamecard, getNamecards } from './controller';
 const router = express.Router();
 
 router.post('/', authRequired, createNamecard);
-router.get('/', authRequired, getNamecards);
+router.get('/', addTokenPayload, getNamecards);
 
 export default router;
