@@ -5,7 +5,8 @@ import morgan from 'morgan';
 import bodyParser from 'body-parser';
 import config from 'config';
 import routes from './routes';
-import initDB, { populateWithSampleData } from './db';
+import devUtils from './utils/devUtils';
+import initDB from './db';
 
 let app = express();
 app.server = http.createServer(app);
@@ -17,6 +18,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.use('/', routes);
+
+if (app.get('env') === 'development') {
+  app.use('/utils', devUtils)
+}
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -36,7 +41,6 @@ app.use(function(err, req, res) {
 });
 
 initDB(async () => {
-  await populateWithSampleData();
   app.server.listen(
     process.env.PORT || config.port,
     process.env.SERVE_IP || config.ip,
