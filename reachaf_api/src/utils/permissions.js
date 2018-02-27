@@ -1,4 +1,6 @@
 import jwt from 'jsonwebtoken';
+import models from 'models';
+const { User } = models;
 
 // Logic in this file is funky.. authRequired and addTokenPayload do the same checks
 export const authRequired = async (req, res, next) => {
@@ -28,7 +30,7 @@ export const authRequired = async (req, res, next) => {
   next();
 };
 
-export const addTokenPayload = async (req, res, next) => {
+export const addRequestingUser = async (req, res, next) => {
   if (!req.headers.authorization) {
     return next();
   }
@@ -39,8 +41,13 @@ export const addTokenPayload = async (req, res, next) => {
 
   const secret = req.app.get('jwt-secret');
   try {
-    req.tokenPayload = await jwt.verify(headerAuths[1], secret);
-    console.log('jwt-token says : ', req.tokenPayload);
+    const tokenPayload = await jwt.verify(headerAuths[1], secret);
+    console.log('jwt-token says : ', tokenPayload);
+    const foundUser = await User.findById(tokenPayload.id);
+    if (foundUser.username === tokenPayload.username) {
+      req.tokenPayload = tokenPayload;
+      req.requestingUser = foundUser;
+    }
   } catch (err) {
     delete req.tokenPayload;
   }

@@ -42,7 +42,7 @@ export const getNamecards = async (req, res) => {
     });
   }
 
-  if (req.tokenPayload && req.tokenPayload.id) {
+  if (req.requestingUser) {
     getNamecardsWithAuth(req, res);
   } else {
     getNamecardsWithoutAuth(req, res);
@@ -51,10 +51,12 @@ export const getNamecards = async (req, res) => {
 
 const getNamecardsWithAuth = async (req, res) => {
   try {
-    const { id } = req.tokenPayload;
-    const requestingUser = await User.findById(id);
+    const requestingUser = req.requestingUser;
     if (!requestingUser) {
-      return res.status(401).json({ message: 'token user does not exist' });
+      return res.status(401).json({
+        message:
+          'requesting user (implied from the access token) does not exist'
+      });
     }
 
     if (requestingUser.isAdmin()) {
@@ -62,7 +64,7 @@ const getNamecardsWithAuth = async (req, res) => {
     }
 
     if (isRequestingForOwn(requestingUser, req.query)) {
-      const namecards = await da_namecardsBelongsToUserid(id, [
+      const namecards = await da_namecardsBelongsToUserid(requestingUser.id, [
         'default',
         'public',
         'private',
@@ -72,14 +74,23 @@ const getNamecardsWithAuth = async (req, res) => {
     }
 
     // at this point, either query.id xor query.username is available
-    const userid = req.query.userid
-      ? req.query.userid
-      : (await User.findOne({ where: { username: req.query.username } })).id;
-    const namecards = await da_namecardsBelongsToUserid(userid, [
+    const queriedUser = req.query.userid
+      ? await User.findById(req.query.userid)
+      : await User.findOne({ where: { username: req.query.username } });
+
+    if (!queriedUser) {
+      return res
+        .status(404)
+        .json({ message: 'no user found with the given query' });
+    }
+
+    const namecards = await da_namecardsBelongsToUserid(queriedUser.id, [
       'default',
       'public'
     ]);
-    const privateNamecards = await da_privateNamecardsBelongsToUserid(userid);
+    const privateNamecards = await da_privateNamecardsBelongsToUserid(
+      queriedUser.id
+    );
     return res.json(concat(namecards, privateNamecards));
   } catch (err) {
     res.json(err.message);
