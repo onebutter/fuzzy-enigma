@@ -74,6 +74,15 @@ const getNamecardsWithAuth = async (req, res) => {
     }
 
     // at this point, either query.id xor query.username is available
+    // hence, it has the same operation as non-authorized access
+    getNamecardsWithoutAuth(req, res);
+  } catch (err) {
+    res.json(err.message);
+  }
+};
+
+const getNamecardsWithoutAuth = async (req, res) => {
+  try {
     const queriedUser = req.query.userid
       ? await User.findById(req.query.userid)
       : await User.findOne({ where: { username: req.query.username } });
@@ -95,10 +104,6 @@ const getNamecardsWithAuth = async (req, res) => {
   } catch (err) {
     res.json(err.message);
   }
-};
-
-const getNamecardsWithoutAuth = async (req, res) => {
-  return res.json({ message: 'TODO: noob access' });
 };
 
 const admin_getNamecards = async (req, res) => {
