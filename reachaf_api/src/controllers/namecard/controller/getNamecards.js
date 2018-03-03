@@ -1,38 +1,10 @@
+import { Op } from 'sequelize';
 import concat from 'lodash/fp/concat';
 import models from 'models';
-import {
-  da_namecardsBelongsToUserid,
-  da_privateNamecardsBelongsToUserid,
-  da_updateExistingDefaultToPublic
-} from './dataAccess';
+
 const { User, Namecard } = models;
 
-export const createNamecard = async (req, res) => {
-  try {
-    const { numNamecard, id } = req.requestingUser;
-    let data = req.body;
-    if (data.services.length + data.aliases.length === 0) {
-      throw new Error('At least one service or one alias is required');
-    }
-    data['UserId'] = id;
-    if (numNamecard === 0) {
-      data['privacy'] = 'default';
-    }
-    const namecard = await Namecard.create(data);
-    if (data.privacy === 'default' && numNamecard > 1) {
-      da_updateExistingDefaultToPublic(id, namecard);
-    }
-    await req.requestingUser.increment('numNamecard', { by: 1 });
-    res.json(namecard);
-  } catch (err) {
-    res.status(400).json({
-      message: err.message,
-      errors: err
-    });
-  }
-};
-
-export const getNamecards = async (req, res) => {
+export default async (req, res) => {
   if (req.query && req.query.userid && req.query.username) {
     return res.json({
       message: 'You cannot query for both userid and username.'
@@ -105,6 +77,29 @@ const getNamecardsWithoutAuth = async (req, res) => {
 
 const admin_getNamecards = async (req, res) => {
   return res.json({ message: 'TODO: admin retrieves everything' });
+};
+
+const da_namecardsBelongsToUserid = async (UserId, privacy) => {
+  const namecards = await Namecard.findAll({
+    where: {
+      UserId,
+      privacy: {
+        [Op.in]: privacy
+      }
+    }
+  });
+  return namecards;
+};
+
+const da_privateNamecardsBelongsToUserid = async UserId => {
+  const namecards = await Namecard.findAll({
+    where: {
+      UserId,
+      privacy: 'private'
+    },
+    attributes: ['id', 'tag', 'privacy']
+  });
+  return namecards;
 };
 
 const isRequestingForOwn = (tokenUser, query) => {
