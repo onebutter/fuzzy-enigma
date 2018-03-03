@@ -2,36 +2,33 @@ import concat from 'lodash/fp/concat';
 import models from 'models';
 import {
   da_namecardsBelongsToUserid,
-  da_privateNamecardsBelongsToUserid
+  da_privateNamecardsBelongsToUserid,
+  da_updateExistingDefaultToPublic
 } from './dataAccess';
 const { User, Namecard } = models;
 
 export const createNamecard = async (req, res) => {
   try {
-    const { id } = req.tokenPayload;
-    let user = await User.findById(id);
-    if (!user) {
-      return res.status(404).json({
-        message: `user not found with id: ${id}`
-      });
+    const { numNamecard, id } = req.requestingUser;
+    let data = req.body;
+    if (data.services.length + data.aliases.length === 0) {
+      throw new Error('At least one service or one alias is required');
     }
-    const existingNamecardCount = await Namecard.count({
-      where: { UserId: id }
-    });
-    let namecard;
-    if (existingNamecardCount === 0) {
-      namecard = await Namecard.create({
-        ...req.body,
-        privacy: 'default'
-      });
-    } else {
-      namecard = await Namecard.create(req.body);
+    data['UserId'] = id;
+    if (numNamecard === 0) {
+      data['privacy'] = 'default';
     }
-    await user.addNamecard(namecard);
-    await user.increment('numNamecard', { by: 1 });
+    const namecard = await Namecard.create(data);
+    if (data.privacy === 'default' && numNamecard > 1) {
+      da_updateExistingDefaultToPublic(id, namecard);
+    }
+    await req.requestingUser.increment('numNamecard', { by: 1 });
     res.json(namecard);
   } catch (err) {
-    res.json(err.message);
+    res.status(400).json({
+      message: err.message,
+      errors: err
+    });
   }
 };
 

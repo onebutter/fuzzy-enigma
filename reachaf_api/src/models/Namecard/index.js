@@ -1,11 +1,13 @@
 export default (sequelize, DataTypes) => {
+  const { User } = sequelize.models;
   const Namecard = sequelize.define(
     'Namecard',
     {
       tag: {
         type: DataTypes.STRING,
         allowNull: false,
-        defaultValue: ''
+        unique: 'namecardPK',
+        validate: { notEmpty: true }
       },
       privacy: {
         type: DataTypes.ENUM,
@@ -20,6 +22,14 @@ export default (sequelize, DataTypes) => {
       aliases: {
         type: DataTypes.JSONB,
         allowNull: true
+      },
+      UserId: {
+        type: DataTypes.INTEGER,
+        unique: 'namecardPK',
+        references: {
+          model: User,
+          key: 'id'
+        }
       }
     },
     {

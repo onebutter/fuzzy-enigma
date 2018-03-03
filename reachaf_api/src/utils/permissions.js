@@ -21,9 +21,17 @@ export const authRequired = async (req, res, next) => {
   const secret = req.app.get('jwt-secret');
   try {
     req.tokenPayload = await jwt.verify(headerAuths[1], secret);
-    console.log('jwt-token says : ', req.tokenPayload);
+    const foundUser = await User.findById(req.tokenPayload.id);
+    if (!foundUser) {
+      return res.status(403).json({
+        message: `no user was found with the implied userid : ${
+          req.tokenPayload.id
+        }`
+      });
+    }
+    req.requestingUser = foundUser;
   } catch (err) {
-    res.status(401).json({
+    res.status(403).json({
       message: 'Invalid token'
     });
   }
@@ -42,7 +50,6 @@ export const addRequestingUser = async (req, res, next) => {
   const secret = req.app.get('jwt-secret');
   try {
     const tokenPayload = await jwt.verify(headerAuths[1], secret);
-    console.log('jwt-token says : ', tokenPayload);
     const foundUser = await User.findById(tokenPayload.id);
     if (foundUser.username === tokenPayload.username) {
       req.tokenPayload = tokenPayload;

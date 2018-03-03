@@ -24,3 +24,20 @@ export const da_privateNamecardsBelongsToUserid = async UserId => {
   });
   return namecards;
 };
+
+export const da_updateExistingDefaultToPublic = async (
+  UserId,
+  newDefaultNamecard
+) => {
+  const defaultNamecard = await Namecard.findOne({
+    where: {
+      id: {
+        [Op.ne]: newDefaultNamecard.id
+      },
+      UserId,
+      privacy: 'default'
+    }
+  });
+  defaultNamecard.privacy = 'public';
+  await defaultNamecard.save();
+};
