@@ -13,7 +13,7 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.ENUM,
         values: ['default', 'public', 'private', 'secret'],
         allowNull: false,
-        defaultValue: 'secret'
+        defaultValue: 'public'
       },
       services: {
         type: DataTypes.JSONB,

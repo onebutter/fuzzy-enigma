@@ -111,5 +111,8 @@ const isRequestingForOwn = (tokenUser, query) => {
     return true;
   }
 
-  return query.username === tokenUser.username || query.userid === tokenUser.id;
+  return (
+    query.username === tokenUser.username ||
+    parseInt(query.userid) === tokenUser.id
+  );
 };
