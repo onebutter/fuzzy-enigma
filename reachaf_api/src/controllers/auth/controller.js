@@ -19,7 +19,7 @@ export const register = async (req, res) => {
     if (count) {
       return res.status(400).json({
         code: 'USER_EXISTS',
-        message: `username: ${username} already exists`
+        message: `username "${username.toLowerCase()}" already exists`
       });
     }
     const usernameValidation = User.validateUsername(username);
