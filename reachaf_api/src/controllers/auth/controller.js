@@ -1,4 +1,5 @@
 import pick from 'lodash/pick';
+import sequelize from 'sequelize';
 import models from 'models';
 import jwt from 'jsonwebtoken';
 const { User } = models;
@@ -6,6 +7,21 @@ const { User } = models;
 export const register = async (req, res) => {
   try {
     const { username, password } = req.body;
+    const count = await User.count({
+      where: {
+        username: sequelize.where(
+          sequelize.fn('LOWER', sequelize.col('username')),
+          '=',
+          username.toLowerCase()
+        )
+      }
+    });
+    if (count) {
+      return res.status(400).json({
+        code: 'USER_EXISTS',
+        message: `username: ${username} already exists`
+      });
+    }
     const usernameValidation = User.validateUsername(username);
     if (usernameValidation.isFailed) {
       return res.status(400).json(usernameValidation.error);
@@ -14,14 +30,6 @@ export const register = async (req, res) => {
     const passwordValidation = User.validatePassword(password);
     if (passwordValidation.isFailed) {
       return res.status(400).json(passwordValidation.error);
-    }
-
-    const count = await User.count({ where: { username } });
-    if (count) {
-      return res.status(400).json({
-        code: 'USER_EXISTS',
-        message: `username: ${username} already exists`
-      });
     }
     const user = await User.create(req.body);
     res.status(201).json({
