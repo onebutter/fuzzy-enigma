@@ -45,7 +45,15 @@ export const register = async (req, res) => {
 export const login = async (req, res) => {
   try {
     const { username, password } = req.body;
-    let user = await User.findOne({ where: { username } });
+    let user = await User.findOne({
+      where: {
+        username: sequelize.where(
+          sequelize.fn('LOWER', sequelize.col('username')),
+          '=',
+          username.toLowerCase()
+        )
+      }
+    });
     if (!user) {
       return res.status(404).json({
         message: `username: ${username} not found`
@@ -70,7 +78,6 @@ export const login = async (req, res) => {
       auth: { token }
     });
   } catch (err) {
-    console.log('Auth', err);
     res.status(err.status || 500);
     res.json(err);
   }
