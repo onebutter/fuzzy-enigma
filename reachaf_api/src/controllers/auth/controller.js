@@ -6,14 +6,20 @@ const { User } = models;
 export const register = async (req, res) => {
   try {
     const { username, password } = req.body;
-    if (!User.isValidPassword(password)) {
-      return res.status(400).json({
-        message: 'password needs to be more secure'
-      });
+    const usernameValidation = User.validateUsername(username);
+    if (usernameValidation.isFailed) {
+      return res.status(400).json(usernameValidation.error);
     }
+
+    const passwordValidation = User.validatePassword(password);
+    if (passwordValidation.isFailed) {
+      return res.status(400).json(passwordValidation.error);
+    }
+
     const count = await User.count({ where: { username } });
     if (count) {
       return res.status(400).json({
+        code: 'USER_EXISTS',
         message: `username: ${username} already exists`
       });
     }

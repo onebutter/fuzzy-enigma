@@ -41,8 +41,45 @@ export default (sequelize, DataTypes) => {
     models.User.hasMany(models.Namecard);
   };
 
-  User.isValidPassword = function(password) {
-    return password.length;
+  User.validatePassword = function(password) {
+    if (password.length < 4 || password.length > 40) {
+      return {
+        isFailed: true,
+        error: {
+          code: 'PASSWORD_INVALID_LENGTH',
+          message: 'password must be between 4 to 40 characters'
+        }
+      };
+    }
+    return {
+      isFailed: false
+    };
+  };
+
+  User.validateUsername = function(username) {
+    if (username.legnth > 24 || username.length < 2) {
+      return {
+        isFailed: true,
+        error: {
+          code: 'USERNAME_INVALID_LENGTH',
+          message: 'username has to be between 2 to 24 characters'
+        }
+      };
+    }
+
+    if (!username.match(/[A-z]{1}([A-z0-9_.\-@]+)/)) {
+      return {
+        isFailed: true,
+        error: {
+          code: 'USERNAME_BAD',
+          message: 'invalid character is included'
+        }
+      };
+    }
+
+    return {
+      isFailed: false
+    };
   };
 
   User.prototype.isAdmin = function() {
