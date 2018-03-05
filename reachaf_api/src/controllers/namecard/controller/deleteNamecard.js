@@ -23,7 +23,7 @@ export default async (req, res) => {
     });
   }
 
-  if (targetNc.privay === 'default') {
+  if (targetNc.privacy === 'default') {
     const publicNc = await Namecard.findOne({
       where: {
         privacy: 'public'
