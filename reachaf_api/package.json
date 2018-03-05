@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "description": "server for reachaf.com",
   "scripts": {
-    "start": "cross-env NODE_ENV=development MODE=development nodemon --inspect=0.0.0.0:5858 -L src/app.js --exec babel-node --presets es2015,stage-2",
+    "start": "cross-env NODE_ENV=development MODE=development nodemon -L src/app.js --exec babel-node --presets es2015,stage-2",
     "build": "cross-env NODE_ENV=development MODE=development babel src -d dist --presets es2015,stage-2",
     "serve": "cross-env NODE_ENV=development MODE=development node dist/app.js"
   },

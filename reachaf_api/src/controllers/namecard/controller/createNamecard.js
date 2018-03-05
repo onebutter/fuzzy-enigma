@@ -15,7 +15,7 @@ export default async (req, res) => {
       data['privacy'] = 'default';
     }
     const namecard = await Namecard.create(data);
-    if (data.privacy === 'default' && numNamecard > 1) {
+    if (data.privacy === 'default' && numNamecard > 0) {
       await da_updateExistingDefaultToPublic(id, namecard);
     }
     await req.requestingUser.increment('numNamecard', { by: 1 });

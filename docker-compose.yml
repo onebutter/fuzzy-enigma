@@ -21,7 +21,6 @@ services:
       - "./reachaf_api:/app"
     ports:
       - "4000:4000"
-      - "5858:5858"
     environment:
       SERVE_IP: "0.0.0.0"
 
