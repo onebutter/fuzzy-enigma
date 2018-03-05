@@ -1,4 +1,4 @@
-import { Op } from 'sequelize';
+import sequelize, { Op } from 'sequelize';
 import concat from 'lodash/fp/concat';
 import models from 'models';
 
@@ -54,8 +54,15 @@ const getNamecardsWithoutAuth = async (req, res) => {
   try {
     const queriedUser = req.query.userid
       ? await User.findById(req.query.userid)
-      : await User.findOne({ where: { username: req.query.username } });
-
+      : await User.findOne({
+          where: {
+            username: sequelize.where(
+              sequelize.fn('LOWER', sequelize.col('username')),
+              '=',
+              req.query.username.toLowerCase()
+            )
+          }
+        });
     if (!queriedUser) {
       return res
         .status(404)
