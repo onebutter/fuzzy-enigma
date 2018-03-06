@@ -17,11 +17,12 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
-app.use('/', routes);
-
 if (app.get('env') === 'development') {
+  console.log('activating devUtils');
   app.use('/utils', devUtils);
 }
+
+app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -45,6 +46,7 @@ initDB(async () => {
     process.env.PORT || config.port,
     process.env.SERVE_IP || config.ip,
     () => {
+      console.log(`Current env: ${app.get('env')}`);
       console.log(`Started on port ${app.server.address().port}`);
     }
   );
