@@ -39,6 +39,11 @@ const populateWithSampleData = async (req, res) => {
   }
 };
 
+const pong = (req, res) => {
+  return res.status(200).json({ message: 'pong' });
+};
+
+router.get('/ping', pong);
 router.get('/purgedb', purgedb);
 router.get('/populatedb', populateWithSampleData);
 
