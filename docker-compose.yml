@@ -23,5 +23,6 @@ services:
       - "4000:4000"
     environment:
       SERVE_IP: "0.0.0.0"
+    command: npm run debug
 
 
