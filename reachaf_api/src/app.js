@@ -1,3 +1,7 @@
+/* eslint-disable */
+import babelcore from 'babel-core/register';
+import babelpolyfill from 'babel-polyfill';
+/* eslint-enable */
 import http from 'http';
 import express from 'express';
 import cors from 'cors';

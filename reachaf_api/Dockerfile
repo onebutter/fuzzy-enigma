@@ -7,7 +7,6 @@ RUN mkdir -p /app && cp -a /tmp/node_modules /app
 WORKDIR /app
 ADD . /app
 
-USER node
 EXPOSE 4000
 
 CMD ["npm", "start"]
