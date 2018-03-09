@@ -48,15 +48,23 @@ export const addRequestingUser = async (req, res, next) => {
   }
 
   const secret = req.app.get('jwt-secret');
+  let tokenPayload;
   try {
-    const tokenPayload = await jwt.verify(headerAuths[1], secret);
-    const foundUser = await User.findById(tokenPayload.id);
-    if (foundUser.username === tokenPayload.username) {
-      req.tokenPayload = tokenPayload;
-      req.requestingUser = foundUser;
-    }
+    tokenPayload = await jwt.verify(headerAuths[1], secret);
   } catch (err) {
-    delete req.tokenPayload;
+    return res.status(401).json({
+      message: err.message,
+      payload: headerAuths
+    });
   }
-  next();
+  const foundUser = await User.findById(tokenPayload.id);
+  if (foundUser.username === tokenPayload.username) {
+    req.tokenPayload = tokenPayload;
+    req.requestingUser = foundUser;
+    next();
+  } else {
+    return res.status(401).json({
+      message: 'token implied userid does not match the database userid'
+    });
+  }
 };
