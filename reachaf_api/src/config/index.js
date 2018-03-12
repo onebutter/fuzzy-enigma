@@ -1,10 +1,9 @@
-export default {
-  port: process.env.PORT || 4000,
-  ip: process.env.SERVE_IP || '127.0.0.1',
-  database: {
-    database: process.env.DB_NAME || 'reachaf_db',
-    password: process.env.DB_PASS || '123456',
-    username: process.env.DB_USER || 'postgres'
-  },
-  secret: process.env.JWT_SECRET || 'Tlzmflt'
-};
+import development from './development';
+import production from './production';
+
+let config = development;
+if (process.env.NODE_ENV === 'production') {
+  config = production;
+}
+
+export default config;

@@ -50,7 +50,7 @@ initDB(async () => {
     process.env.PORT || config.port,
     process.env.SERVE_IP || config.ip,
     () => {
-      console.log(`Current env: ${app.get('env')}`);
+      console.log(`Current env: ${app.get('env')} ${process.env.NODE_ENV}`);
       console.log(`Started on port ${app.server.address().port}`);
     }
   );
