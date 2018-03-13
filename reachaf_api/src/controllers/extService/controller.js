@@ -18,7 +18,12 @@ export const getTokenForDiscord = async (req, res) => {
     form: data
   };
 
-  const xx = await request(options);
-
-  console.log(xx)
+  try {
+    const responseFromDiscord = await request(options);
+    res.json(JSON.parse(responseFromDiscord));
+  } catch (err) {
+    res.status(400).json({
+      message: err.message
+    });
+  }
 };
