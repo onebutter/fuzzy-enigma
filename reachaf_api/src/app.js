@@ -47,10 +47,11 @@ app.use(function(err, req, res) {
 
 initDB(async () => {
   app.server.listen(
-    process.env.PORT || config.port,
-    process.env.SERVE_IP || config.ip,
+    config.port,
+    config.ip,
     () => {
       console.log(`Current env: ${app.get('env')} ${process.env.NODE_ENV}`);
+      console.log(`config: port ${config.port} address ${config.ip}`);
       console.log(`Started on port ${app.server.address().port}`);
     }
   );

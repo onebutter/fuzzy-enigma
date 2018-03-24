@@ -1,5 +1,5 @@
 version: '3'
-services: 
+services:
   db:
     image: "postgres:9.6"
     environment:
@@ -11,15 +11,13 @@ services:
     container_name: db
 
   reachaf_api:
-    build: 
+    build:
       context: ./reachaf_api
       dockerfile: Dockerfile
     container_name: reachaf_api
-    depends_on: 
+    depends_on:
       - db
     ports:
       - "4000:4000"
-    environment:
-      SERVE_IP: "0.0.0.0"
     command: npm run start:prod
 

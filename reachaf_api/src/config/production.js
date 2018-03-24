@@ -1,6 +1,6 @@
 export default {
   port: process.env.PORT || 4000,
-  ip: process.env.SERVE_IP || '127.0.0.1',
+  ip: process.env.SERVE_IP || '0.0.0.0',
   database: {
     database: process.env.DB_NAME || 'reachaf_db',
     password: process.env.DB_PASS || '123456',
