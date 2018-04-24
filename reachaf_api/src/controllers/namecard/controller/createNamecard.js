@@ -36,12 +36,9 @@ export default async (req, res) => {
   }
 };
 
-const updateExistingDefaultToPublic = async (UserId, newDefaultNamecard) => {
+const updateExistingDefaultToPublic = async UserId => {
   const defaultNamecard = await Namecard.findOne({
     where: {
-      id: {
-        [Op.ne]: newDefaultNamecard.id
-      },
       UserId,
       privacy: 'default'
     }
