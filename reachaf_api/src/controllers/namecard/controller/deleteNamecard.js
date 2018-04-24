@@ -1,6 +1,6 @@
 import models from 'models';
 
-const { Namecard } = models;
+const { User, Namecard } = models;
 
 export default async (req, res) => {
   const targetId = req.params.namecardId;
@@ -36,6 +36,8 @@ export default async (req, res) => {
   }
 
   const result = await targetNc.destroy();
+  const associatedUser = await User.findById(targetNc.UserId);
+  await associatedUser.decrement('numNamecard', { by: 1 });
 
   res.json(result);
 };
