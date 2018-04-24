@@ -13,7 +13,7 @@ export const sampleData = {
 };
 
 export const genSampleNamecard = username => ({
-  tag: `${username}-${Math.floor(Math.random() * 1000)}`,
+  tags: ['some', 'tags', 'for', 'testing'],
   services: [
     {
       type: 'facebook',

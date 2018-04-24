@@ -3,11 +3,10 @@ export default (sequelize, DataTypes) => {
   const Namecard = sequelize.define(
     'Namecard',
     {
-      tag: {
-        type: DataTypes.STRING,
-        allowNull: false,
-        unique: 'namecardPK',
-        validate: { notEmpty: true }
+      tags: {
+        type: DataTypes.ARRAY(DataTypes.STRING),
+        allowNull: true,
+        defaultValue: []
       },
       privacy: {
         type: DataTypes.ENUM,
@@ -25,7 +24,6 @@ export default (sequelize, DataTypes) => {
       },
       UserId: {
         type: DataTypes.INTEGER,
-        unique: 'namecardPK',
         references: {
           model: User,
           key: 'id'

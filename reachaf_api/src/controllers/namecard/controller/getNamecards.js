@@ -104,7 +104,7 @@ const da_privateNamecardsBelongsToUserid = async UserId => {
       UserId,
       privacy: 'private'
     },
-    attributes: ['id', 'tag', 'privacy']
+    attributes: ['id', 'tags', 'privacy']
   });
   return namecards;
 };

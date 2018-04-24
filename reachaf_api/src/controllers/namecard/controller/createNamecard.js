@@ -1,4 +1,3 @@
-import { Op } from 'sequelize';
 import models from 'models';
 
 const { Namecard } = models;
