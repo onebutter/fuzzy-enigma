@@ -53,7 +53,6 @@ export const getTokenForGithub = async (req, res) => {
     }
     res.json(resObj);
   } catch (err) {
-    console.log('err', err);
     res.status(400).json({
       message: err.message
     });

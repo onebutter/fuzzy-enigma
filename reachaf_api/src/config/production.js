@@ -15,7 +15,7 @@ export default {
     },
     github: {
       clientID: 'f54426016f299b0f1d1e',
-      clientn: 'd6061c17e929c7fea01818ddd044aae741008186',
+      clientSecret: 'd6061c17e929c7fea01818ddd044aae741008186',
       tokenURL: 'https://github.com/login/oauth/access_token'
     }
   }
