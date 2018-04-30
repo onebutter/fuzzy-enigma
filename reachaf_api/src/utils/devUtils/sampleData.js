@@ -16,25 +16,25 @@ export const genSampleNamecard = username => ({
   tags: ['some', 'tags', 'for', 'testing'],
   services: [
     {
-      type: 'facebook',
+      label: 'facebook',
       value: `http://facebook.com/${username}`
     },
     {
-      type: 'email',
+      label: 'email',
       value: `${username}${Math.floor(Math.random() * 100)}@gmail.com`
     },
     {
-      type: 'mobile',
+      label: 'mobile',
       value: `${Math.floor(Math.random() * 10000000000)}`
     }
   ],
   aliases: [
     {
-      type: 'my user name',
+      label: 'my user name',
       value: `${username}`
     },
     {
-      type: 'spliiitt',
+      label: 'spliiitt',
       value: `${username.split('').join(' ')}`
     }
   ]
