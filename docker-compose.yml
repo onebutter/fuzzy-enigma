@@ -3,9 +3,9 @@ services:
   db:
     image: "postgres:9.6"
     environment:
-     POSTGRES_PASSWORD: 123456
-     POSTGRES_USER: postgres
-     POSTGRES_DB: reachaf_db
+      POSTGRES_PASSWORD: 123456
+      POSTGRES_USER: postgres
+      POSTGRES_DB: reachaf_db
     ports:
       - "5432:5432"
     container_name: db
@@ -21,6 +21,7 @@ services:
       - "./reachaf_api:/app"
     ports:
       - "4000:4000"
-    command: npm run debug
+    command: npm run start
+    # command: npm run start:dev
 
 

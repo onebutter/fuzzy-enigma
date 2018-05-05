@@ -58,7 +58,7 @@ export const addRequestingUser = async (req, res, next) => {
     });
   }
   const foundUser = await User.findById(tokenPayload.id);
-  if (foundUser.username === tokenPayload.username) {
+  if (foundUser && foundUser.username === tokenPayload.username) {
     req.tokenPayload = tokenPayload;
     req.requestingUser = foundUser;
     next();
