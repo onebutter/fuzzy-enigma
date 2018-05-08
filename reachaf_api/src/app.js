@@ -26,11 +26,20 @@ if (app.get('env') === 'development') {
   app.use('/utils', devUtils);
 }
 
+if (app.get('env') === 'production') {
+  app.use(function(req, res, next) {
+    if (req.headers['origin'] !== config.origin) {
+      res.json({ error: 'invalid origin' });
+    }
+    next();
+  });
+}
+
 app.use('/', routes);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
-  var err = new Error('Not Found');
+  let err = new Error('Not Found');
   err.status = 404;
   next(err);
 });

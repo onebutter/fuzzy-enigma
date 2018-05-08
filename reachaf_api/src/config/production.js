@@ -18,5 +18,6 @@ export default {
       clientSecret: 'd6061c17e929c7fea01818ddd044aae741008186',
       tokenURL: 'https://github.com/login/oauth/access_token'
     }
-  }
+  },
+  origin: 'http://reachaf.com'
 };
