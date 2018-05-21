@@ -12,12 +12,6 @@ export default async (req, res) => {
     }
     data['UserId'] = id;
     const numNamecard = await Namecard.count({ where: { UserId: id } });
-    if (numNamecard !== req.requestingUser.numNamecard) {
-      throw new Error(
-        'count of existing namecards and numNamecard do not match'
-      );
-    }
-
     if (numNamecard === 0) {
       data['privacy'] = 'default';
     } else {
@@ -27,7 +21,6 @@ export default async (req, res) => {
     }
     data.services = actionFulfilment(data.services);
     const namecard = await Namecard.create(data);
-    await req.requestingUser.increment('numNamecard', { by: 1 });
     res.json(namecard);
   } catch (err) {
     res.status(400).json({

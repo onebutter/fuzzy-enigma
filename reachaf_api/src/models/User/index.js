@@ -12,14 +12,6 @@ export default (sequelize, DataTypes) => {
         type: DataTypes.ENUM,
         values: ['admin', 'user'],
         defaultValue: 'user'
-      },
-      numNamecard: {
-        type: DataTypes.INTEGER,
-        allowNull: false,
-        defaultValue: 0,
-        validate: {
-          min: 0
-        }
       }
     },
     {

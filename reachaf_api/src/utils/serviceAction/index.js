@@ -7,9 +7,11 @@ function actionFulfilment(services) {
     if (typeof phoneNumberUtil === 'undefined') {
       phoneNumberUtil = libphonenumber.PhoneNumberUtil.getInstance();
     }
-    return services.map(v => fulfil(v));
+    return services
+      .filter(v => typeof v !== 'undefined' || v !== null)
+      .map(v => fulfil(v));
   } catch (e) {
-    return services;
+    return services.filter(v => typeof v !== 'undefined' || v !== null);
   }
 }
 
@@ -74,6 +76,8 @@ function createAction(service) {
           target: phoneNumberUtil.format(phoneNumber, PNF.E164)
         }
       };
+    } else {
+      return { ...service };
     }
   } catch (e) {
     return { ...service };
