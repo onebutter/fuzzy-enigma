@@ -1,4 +1,5 @@
 import models from 'models';
+import actionFulfilment from 'utils/serviceAction';
 
 const { Namecard } = models;
 
@@ -24,6 +25,7 @@ export default async (req, res) => {
         await updateExistingDefaultToPublic(id, namecard);
       }
     }
+    data.services = actionFulfilment(data.services);
     const namecard = await Namecard.create(data);
     await req.requestingUser.increment('numNamecard', { by: 1 });
     res.json(namecard);
